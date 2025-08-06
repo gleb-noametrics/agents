@@ -281,8 +281,18 @@ class ChatCLI:
     def _update_microphone(self, *, enable: bool) -> None:
         import sounddevice as sd
 
-        input_device, _ = sd.default.device
-        if input_device is not None and enable:
+        # Check for custom input device from environment variable
+        device_name = os.getenv("LIVEKIT_INPUT_DEVICE")
+        if device_name:
+            input_device = None
+            for idx, dev in enumerate(sd.query_devices()):
+                if device_name.lower() in dev["name"].lower():
+                    input_device = idx
+                    break
+            if input_device is None:
+                raise RuntimeError(f"Input device '{device_name}' not found")
+        else:
+            input_device, _ = sd.default.device        if input_device is not None and enable:
             device_info = sd.query_devices(input_device)
             assert isinstance(device_info, dict)
 
@@ -306,8 +316,18 @@ class ChatCLI:
     def _update_speaker(self, *, enable: bool) -> None:
         import sounddevice as sd
 
-        _, output_device = sd.default.device
-        if output_device is not None and enable:
+        # Check for custom output device from environment variable
+        device_name = os.getenv("LIVEKIT_OUTPUT_DEVICE")
+        if device_name:
+            output_device = None
+            for idx, dev in enumerate(sd.query_devices()):
+                if device_name.lower() in dev["name"].lower():
+                    output_device = idx
+                    break
+            if output_device is None:
+                raise RuntimeError(f"Output device '{device_name}' not found")
+        else:
+            _, output_device = sd.default.device        if output_device is not None and enable:
             self._output_stream = sd.OutputStream(
                 callback=self._sd_output_callback,
                 dtype="int16",

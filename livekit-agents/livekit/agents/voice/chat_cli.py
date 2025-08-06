@@ -328,7 +328,9 @@ class ChatCLI:
             if output_device is None:
                 raise RuntimeError(f"Output device '{device_name}' not found")
         else:
-            _, output_device = sd.default.device        if output_device is not None and enable:
+            _, output_device = sd.default.device
+                  
+        if output_device is not None and enable:
             self._output_stream = sd.OutputStream(
                 callback=self._sd_output_callback,
                 dtype="int16",

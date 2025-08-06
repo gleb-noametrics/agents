@@ -292,7 +292,8 @@ class ChatCLI:
             if input_device is None:
                 raise RuntimeError(f"Input device '{device_name}' not found")
         else:
-            input_device, _ = sd.default.device        if input_device is not None and enable:
+            input_device, _ = sd.default.device
+        if input_device is not None and enable:
             device_info = sd.query_devices(input_device)
             assert isinstance(device_info, dict)
 

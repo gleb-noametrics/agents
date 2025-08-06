@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import sys
 import threading
 import time
@@ -329,7 +330,7 @@ class ChatCLI:
                 raise RuntimeError(f"Output device '{device_name}' not found")
         else:
             _, output_device = sd.default.device
-                  
+
         if output_device is not None and enable:
             self._output_stream = sd.OutputStream(
                 callback=self._sd_output_callback,
